@@ -1,0 +1,5 @@
+#!/bin/bash
+# Apply the EthernetENC patch for a custom hostname.
+cd EthernetENC
+git apply --reject --whitespace=fix ../EthernetENC-0001-Added-setting-of-a-custom-host-name.patch
+cd ..

@@ -1,0 +1,3 @@
+[submodule "platformio/lib/EthernetENC"]
+	path = platformio/lib/EthernetENC
+	url = https://github.com/jandrassy/EthernetENC.git
