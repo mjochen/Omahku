@@ -18,6 +18,8 @@
       Maak je er dan "AllOffInput" van? "Out" is een ander soort uit dan "Off"...
       Klopt het trouwens dat we hiermee bepaalde uitgangen van de alles uit kunnen afkoppelen? Want dat zou goed zijn.
 
+      Done. Klopt, je kan per output specifieren of je daar de all-off functie op wilt hebben. Je kan hier ook groepen van maken in de `config.h` en dan gebruiken in de `addAllOutInputs(array, size);` bijvoorbeeld.
+
 - [x] De code in app.cpp ziet er heerlijk compact uit, met alle echte logica weggestopt. Als je dat kan volhouden komt het zeker goed.
 - [x] Wel wat verwarrend: het relais koppel je in App.h, maar de knoppen in App.cpp...
 

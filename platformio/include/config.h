@@ -1,6 +1,27 @@
-// General
+///////////////////////////////////////////
+//                                       //
+//  General                              //
+//                                       //
+///////////////////////////////////////////
+
+// # Ethernet settings
+// Hostname of the MCU
 #define CUSTOM_HOST_NAME "arduino01"
 
+// MAC address of the MCU
+// For example: 74:69:69:2D:30:31 becomes 0x74, 0x69, 0x69, 0x2D, 0x30, 0x31
+#define MAC_ADDR_BYTE_1 0x74
+#define MAC_ADDR_BYTE_2 0x69
+#define MAC_ADDR_BYTE_3 0x69
+#define MAC_ADDR_BYTE_4 0x2D
+#define MAC_ADDR_BYTE_5 0x30
+#define MAC_ADDR_BYTE_6 0x31
+
+///////////////////////////////////////////
+//                                       //
+//  Inputs                               //
+//                                       //
+///////////////////////////////////////////
 // Inputs - Push Buttons
 // You can name these however you want.
 // Recommendation: I_PB_<FLOOR>_<ROOM>_<NAME OR NUMBER>
@@ -25,6 +46,11 @@
 #define I_SW_4_1 36
 #define I_SW_4_2 34
 
+///////////////////////////////////////////
+//                                       //
+//  Outputs                              //
+//                                       //
+///////////////////////////////////////////
 // Outputs - Digital
 // You can name these however you want.
 // Recommendation: I_PB_<FLOOR>_<ROOM>_<NAME OR NUMBER>
@@ -37,3 +63,19 @@
 #define Q_RELAY_6 7
 #define Q_RELAY_7 8
 #define Q_RELAY_8 9
+
+///////////////////////////////////////////
+//                                       //
+//  Settings                             //
+//                                       //
+///////////////////////////////////////////
+// You can change these if the program does not fit on the MCU.
+
+// Maximum amount of physical outputs that the program supports.
+#define MAX_AMOUNT_OF_INSTANCES 100
+
+// Maximum amount of input pins that a single output supports.
+#define MAX_AMOUNT_OF_INPUT_PINS 8
+
+// Maximum amount of all off input pins that a single output supports.
+#define MAX_AMOUNT_OF_ALL_OFF_INPUT_PINS 8

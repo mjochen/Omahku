@@ -13,13 +13,17 @@ DigitalOutput::DigitalOutput(uint8_t outputPin)
     // Set the class instance parameters.
     _state = false;
     _outputPin = outputPin;
-    digitalWrite(outputPin, !_state);
+    setState(false);
     
     // Setup the input pins.
     _inputPinCount = 0;
     _inputPins[MAX_AMOUNT_OF_INPUT_PINS] = {};
-    _allOutPinCount = 0;
-    _allOutPins[MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS] = {};
+    _allOffPinCount = 0;
+    _allOffPins[MAX_AMOUNT_OF_ALL_OFF_INPUT_PINS] = {};
+
+    // Set the time to 0 and disable the function.
+    _timeDelay = 0;
+    _timeDelayFunction = false;
 
     // Perform some clever pointer assignment so
     // that we don't have to manually call handle()
@@ -57,19 +61,19 @@ DigitalOutput* DigitalOutput::addInputs(uint8_t inputPin[], uint8_t size)
     return this;
 }
 
-DigitalOutput* DigitalOutput::addAllOutInput(uint8_t inputPin)
+DigitalOutput* DigitalOutput::addAllOffInput(uint8_t inputPin)
 {
     // Set the input pin, as an input pin, obviously.
     pinMode(inputPin, INPUT_PULLUP);
 
     // Add the input pin to the array.
-    _allOutPins[_allOutPinCount] = inputPin;
-    _allOutPinCount++;
+    _allOffPins[_allOffPinCount] = inputPin;
+    _allOffPinCount++;
 
     return this;
 }
 
-DigitalOutput* DigitalOutput::addAllOutInputs(uint8_t inputPin[], uint8_t size)
+DigitalOutput* DigitalOutput::addAllOffInputs(uint8_t inputPin[], uint8_t size)
 {
     for (uint8_t i = 0; i < size; i++)
     {
@@ -77,8 +81,8 @@ DigitalOutput* DigitalOutput::addAllOutInputs(uint8_t inputPin[], uint8_t size)
         pinMode(inputPin[i], INPUT_PULLUP);
 
         // Add the input pin to the array.
-        _allOutPins[_allOutPinCount] = inputPin[i];
-        _allOutPinCount++;
+        _allOffPins[_allOffPinCount] = inputPin[i];
+        _allOffPinCount++;
     }
 
     return this;
@@ -106,30 +110,68 @@ void DigitalOutput::handle()
         // CHANGEME: PII and PQI should be implemented here for non-blocking usage.
         if (digitalRead(_inputPins[i]) == 0)
         {
-            _state = !_state;
-            digitalWrite(_outputPin, !_state);
+            setState(!_state);
+
+            if (_timeDelayFunction) _timeStampOn = millis();
+
             while (digitalRead(_inputPins[i]) == 0) {}
             delay(200);
         }
     }
 
     // Loop over all-out input pin, and check it's state.
-    for (size_t i = 0; i < _allOutPinCount; i++)
+    for (size_t i = 0; i < _allOffPinCount; i++)
     {
-        if (digitalRead(_allOutPins[i]) == 0)
+        if (digitalRead(_allOffPins[i]) == 0)
         {
-            _state = false;
-            digitalWrite(_outputPin, !_state);
+            setState(false);
+        }
+    }
+
+    if (_timeDelayFunction && _state)
+    {
+        unsigned long timeDifferential = millis() - _timeStampOn;
+        if (timeDifferential > _timeDelay)
+        {
+            setState(false);
         }
     }
 }
 
+void DigitalOutput::setState()
+{
+    setState(_state);
+}
+
 void DigitalOutput::setState(bool state)
 {
+    // Set the output state.
+    // True is on, false is off.
     _state = state;
+    digitalWrite(_outputPin, !_state);
 }
 
 bool DigitalOutput::getState()
 {
+    // Get the output state.
+    // True is on, false is off.
     return _state;
+}
+
+void DigitalOutput::setTimeDelay(unsigned long msec)
+{
+    // Turn on the time delay function.
+    _timeDelayFunction = true;
+
+    // Set the total time in msec that is needed.
+    _timeDelay = msec;
+}
+
+void DigitalOutput::setTimeDelay(int hours, int minutes, int seconds)
+{
+    // Turn on the time delay function.
+    _timeDelayFunction = true;
+
+    // Calculate the total time in msec that is needed.
+    _timeDelay = hours * HOURS + minutes * MINUTES + seconds * SECONDS;
 }

@@ -2,10 +2,7 @@
 #define OMAHKU_DIGITALOUTPUT
 
 #include <Arduino.h>
-
-#define MAX_AMOUNT_OF_INSTANCES 100
-#define MAX_AMOUNT_OF_INPUT_PINS 8
-#define MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS 8
+#include "constants.h"
 
 namespace Omahku
 {
@@ -25,8 +22,14 @@ namespace Omahku
         uint8_t _inputPins[MAX_AMOUNT_OF_INPUT_PINS];
 
         // All-out input.
-        uint8_t _allOutPinCount;
-        uint8_t _allOutPins[MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS];
+        uint8_t _allOffPinCount;
+        uint8_t _allOffPins[MAX_AMOUNT_OF_ALL_OFF_INPUT_PINS];
+
+        // Timer function
+        // Turn the light off after a specified amount of time.
+        unsigned long _timeStampOn;
+        unsigned long _timeDelay;
+        bool _timeDelayFunction;
 
         void handle();
     public:
@@ -37,11 +40,15 @@ namespace Omahku
 
         DigitalOutput* addInput(uint8_t inputPin);
         DigitalOutput* addInputs(uint8_t inputPin[], uint8_t size);
-        DigitalOutput* addAllOutInput(uint8_t inputPin);
-        DigitalOutput* addAllOutInputs(uint8_t inputPin[], uint8_t size);
+        DigitalOutput* addAllOffInput(uint8_t inputPin);
+        DigitalOutput* addAllOffInputs(uint8_t inputPin[], uint8_t size);
 
+        void setState();
         void setState(bool state);
         bool getState();
+
+        void setTimeDelay(unsigned long msec);
+        void setTimeDelay(int hours, int minutes, int seconds);
     };
 }
 

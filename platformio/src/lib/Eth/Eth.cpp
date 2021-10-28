@@ -9,9 +9,17 @@ Eth::~Eth() = default;
 bool Eth::setup()
 {
     // CHANGEME: Config option should come here.
-    byte macAddress[] = { 0x74, 0x69, 0x69, 0x2D, 0x30, 0x31 };
+    byte macAddress[] = {
+        MAC_ADDR_BYTE_1,
+        MAC_ADDR_BYTE_2,
+        MAC_ADDR_BYTE_3,
+        MAC_ADDR_BYTE_4,
+        MAC_ADDR_BYTE_5,
+        MAC_ADDR_BYTE_6
+    };
 
-    if (Ethernet.begin(macAddress) == 0)
+    // Start the Ethernet connection with the MAC address and specify a timeout of 5 seconds.
+    if (Ethernet.begin(macAddress, 5000UL) == 0)
     {
         Serial.println("Failed to configure Ethernet using DHCP.");
 
