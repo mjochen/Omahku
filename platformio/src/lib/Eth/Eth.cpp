@@ -8,7 +8,6 @@ Eth::~Eth() = default;
 
 bool Eth::setup()
 {
-    // CHANGEME: Config option should come here.
     byte macAddress[] = {
         MAC_ADDR_BYTE_1,
         MAC_ADDR_BYTE_2,
