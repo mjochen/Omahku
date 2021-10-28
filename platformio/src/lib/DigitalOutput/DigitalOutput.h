@@ -5,6 +5,7 @@
 
 #define MAX_AMOUNT_OF_INSTANCES 100
 #define MAX_AMOUNT_OF_INPUT_PINS 8
+#define MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS 8
 
 namespace Omahku
 {
@@ -24,7 +25,8 @@ namespace Omahku
         uint8_t _inputPins[MAX_AMOUNT_OF_INPUT_PINS];
 
         // All-out input.
-        uint8_t _allOutPin;
+        uint8_t _allOutPinCount;
+        uint8_t _allOutPins[MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS];
 
         void handle();
     public:
@@ -33,8 +35,10 @@ namespace Omahku
 
         static void loop();
 
-        void addInput(uint8_t inputPin);
-        void addAllOutInput(uint8_t inputPin);
+        DigitalOutput* addInput(uint8_t inputPin);
+        DigitalOutput* addInputs(uint8_t inputPin[], uint8_t size);
+        DigitalOutput* addAllOutInput(uint8_t inputPin);
+        DigitalOutput* addAllOutInputs(uint8_t inputPin[], uint8_t size);
 
         void setState(bool state);
         bool getState();

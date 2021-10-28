@@ -18,7 +18,8 @@ DigitalOutput::DigitalOutput(uint8_t outputPin)
     // Setup the input pins.
     _inputPinCount = 0;
     _inputPins[MAX_AMOUNT_OF_INPUT_PINS] = {};
-    _allOutPin = 0;
+    _allOutPinCount = 0;
+    _allOutPins[MAX_AMOUNT_OF_ALL_OUT_INPUT_PINS] = {};
 
     // Perform some clever pointer assignment so
     // that we don't have to manually call handle()
@@ -29,7 +30,7 @@ DigitalOutput::DigitalOutput(uint8_t outputPin)
 
 DigitalOutput::~DigitalOutput() = default;
 
-void DigitalOutput::addInput(uint8_t inputPin)
+DigitalOutput* DigitalOutput::addInput(uint8_t inputPin)
 {
     // Set the input pin, as an input pin, obviously.
     pinMode(inputPin, INPUT_PULLUP);
@@ -37,14 +38,50 @@ void DigitalOutput::addInput(uint8_t inputPin)
     // Add the input pin to the array.
     _inputPins[_inputPinCount] = inputPin;
     _inputPinCount++;
+
+    return this;
 }
 
-void DigitalOutput::addAllOutInput(uint8_t inputPin)
+DigitalOutput* DigitalOutput::addInputs(uint8_t inputPin[], uint8_t size)
+{
+    for (uint8_t i = 0; i < size; i++)
+    {
+        // Set the input pin, as an input pin, obviously.
+        pinMode(inputPin[i], INPUT_PULLUP);
+
+        // Add the input pin to the array.
+        _inputPins[_inputPinCount] = inputPin[i];
+        _inputPinCount++;
+    }
+
+    return this;
+}
+
+DigitalOutput* DigitalOutput::addAllOutInput(uint8_t inputPin)
 {
     // Set the input pin, as an input pin, obviously.
     pinMode(inputPin, INPUT_PULLUP);
 
-    _allOutPin = inputPin;
+    // Add the input pin to the array.
+    _allOutPins[_allOutPinCount] = inputPin;
+    _allOutPinCount++;
+
+    return this;
+}
+
+DigitalOutput* DigitalOutput::addAllOutInputs(uint8_t inputPin[], uint8_t size)
+{
+    for (uint8_t i = 0; i < size; i++)
+    {
+        // Set the input pin, as an input pin, obviously.
+        pinMode(inputPin[i], INPUT_PULLUP);
+
+        // Add the input pin to the array.
+        _allOutPins[_allOutPinCount] = inputPin[i];
+        _allOutPinCount++;
+    }
+
+    return this;
 }
 
 void DigitalOutput::loop()
@@ -76,10 +113,14 @@ void DigitalOutput::handle()
         }
     }
 
-    if (digitalRead(_allOutPin) == 0)
+    // Loop over all-out input pin, and check it's state.
+    for (size_t i = 0; i < _allOutPinCount; i++)
     {
-        _state = false;
-        digitalWrite(_outputPin, !_state);
+        if (digitalRead(_allOutPins[i]) == 0)
+        {
+            _state = false;
+            digitalWrite(_outputPin, !_state);
+        }
     }
 }
 
