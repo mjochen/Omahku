@@ -19,13 +19,13 @@ bool App::setup()
     Serial.begin(115200);
     Serial.println(F("Starting up Omahku controller..."));
 
-    // Serial.println(F("[      ] Setting up module Eth..."));
-    // if (ethernetModule.setup())
-    // {
-    //     Serial.println(F("[  OK  ] Setting up module Omahku::Eth"));
-    // } else {
-    //     Serial.println(F("[ FAIL ] Setting up module Omahku::Eth"));
-    // }
+    Serial.println(F("[      ] Setting up module Eth..."));
+    if (ethernetModule.setup())
+    {
+        Serial.println(F("[  OK  ] Setting up module Omahku::Eth"));
+    } else {
+        Serial.println(F("[ FAIL ] Setting up module Omahku::Eth"));
+    }
 
     test2.addInput(I_PB_1)->addAllOutInput(I_PB_6);
     test3.addInputs(new uint8_t[1]{I_PB_2}, 1)->addAllOutInput(I_PB_6);
