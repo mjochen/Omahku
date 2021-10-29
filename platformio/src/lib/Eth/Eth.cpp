@@ -20,21 +20,21 @@ bool Eth::setup()
     // Start the Ethernet connection with the MAC address and specify a timeout of 5 seconds.
     if (Ethernet.begin(macAddress, 5000UL) == 0)
     {
-        debugln("Failed to configure Ethernet using DHCP.");
+        debugln(F("Failed to configure Ethernet using DHCP."));
 
         if (Ethernet.hardwareStatus() == EthernetNoHardware)
         {
-            debugln("Ethernet controller not found.");
+            debugln(F("Ethernet controller not found."));
         } 
         else if (Ethernet.linkStatus() == LinkOFF)
         {
-            debugln("Ethernet cable is not connected/no link.");
+            debugln(F("Ethernet cable is not connected/no link."));
         }
 
         return false;
     }
 
-    debug("I have an IP address! It's: ");
+    debug(F("I have an IP address! It's: "));
     debugln(Ethernet.localIP());
 
     return true;
@@ -46,22 +46,22 @@ void Eth::loop()
     {
         case 1:
             // DHCP lease renewal failed.
-            debugln("I have no IP address anymore...");
+            debugln(F("I have no IP address anymore..."));
             break;
         
         case 2:
             // DHCP lease renewal success.
-            debugln("I got to keep my IP address!");
+            debugln(F("I got to keep my IP address!"));
             break;
 
         case 3:
             // Rebind fail.
-            debugln("Rebind failed.");
+            debugln(F("Rebind failed."));
             break;
 
         case 4:
             // Rebind success.
-            debugln("Rebind success.");
+            debugln(F("Rebind success."));
             break;
 
         default:

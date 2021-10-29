@@ -25,7 +25,8 @@ DigitalOutput test3{Q_RELAY_2};
 DigitalOutput test4{Q_RELAY_3};
 DigitalOutput test5{Q_RELAY_4};
 DigitalOutput test6{Q_RELAY_5};
-DigitalOutput test7{Q_RELAY_6};
+
+auto virtualSensor = Sensor(0, "virty01");
 
 bool App::setup()
 {
@@ -63,6 +64,8 @@ bool App::setup()
     test5.addInputs(new uint8_t[1]{I_PB_4}, 1)->addAllOffInput(I_PB_6)->setTimeDelay(3000);
     test6.addInputs(new uint8_t[1]{I_PB_5}, 1)->addAllOffInputs(new uint8_t[1]{I_PB_6}, 1);
 
+    virtualSensor.setMQTTInstance(&mqttModule);
+
     infoln(F("Omahku running."));
 
     return true;
@@ -92,6 +95,8 @@ void App::loop()
     // Loop every second.
     if (millis() > timer + 1000)
     {
+        virtualSensor.loop();
+
         timer = millis();
     }
 }

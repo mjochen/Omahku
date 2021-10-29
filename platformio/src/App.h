@@ -18,6 +18,7 @@
 #include "lib/Eth/Eth.h"
 #include "lib/MQTT/MQTT.h"
 #include "lib/DigitalOutput/DigitalOutput.h"
+#include "lib/Sensor/Sensor.h"
 
 namespace Omahku
 {

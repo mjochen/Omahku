@@ -22,17 +22,19 @@ DigitalOutput::DigitalOutput(uint8_t outputPin, const char *outputName)
     // If there is no output name set, give it
     // the value of the output pin number.
     if (outputName == nullptr) itoa(outputPin, _outputName, 10);
-    else strncpy(_outputName, outputName, 40);
+    else strncpy(_outputName, outputName, MAX_OUTPUT_NAME_SIZE);
 
-    sprintf(_topicName, "%s/%s/%s", CUSTOM_HOST_NAME, "/output/", _outputName);
+    snprintf(_topicName, MAX_TOPIC_SIZE, "%s/%s/%s", CUSTOM_HOST_NAME, "/output/", _outputName);
 
     // Initialize the pin as an output.
     pinMode(outputPin, OUTPUT);
 
     // Set the class instance parameters.
-    _state = false;
     _outputPin = outputPin;
     setState(false);
+
+    _lastButtonPress = millis();
+    _buttonPressed = -1;
     
     // Setup the input pins.
     _inputPinCount = 0;
@@ -127,20 +129,31 @@ void DigitalOutput::handle()
     // Loop over every input pin, and check it's state.
     for (size_t i = 0; i < _inputPinCount; i++)
     {
+        // Check if the last button pressed is released.
+        if (_buttonPressed != -1 && digitalRead(_buttonPressed) == 1)
+        {
+            char topic[MAX_TOPIC_SIZE];
+            snprintf(topic, MAX_TOPIC_SIZE, "%s/%s/%d", CUSTOM_HOST_NAME, "/push_button/", _buttonPressed);
+            _mqttInstance->publish(topic, "false");
+            _buttonPressed = -1;
+        }
+
         // If the input pin is low (pull-up so pull low for active)
         // enter the if function, change the output state, write
         // the output state and then wait until the switch comes
         // high again (released), then we wait 200msec because of contact
         // rumbling happening (read Schmitt Trigger).
-        // CHANGEME: PII and PQI should be implemented here for non-blocking usage.
-        if (digitalRead(_inputPins[i]) == 0)
+        if (digitalRead(_inputPins[i]) == 0 && millis() - _lastButtonPress > 200 && _buttonPressed == -1)
         {
             setState(!_state);
 
             if (_timeDelayFunction) _timeStampOn = millis();
+            _lastButtonPress = millis();
+            _buttonPressed = _inputPins[i];
 
-            while (digitalRead(_inputPins[i]) == 0) {}
-            delay(200);
+            char topic[MAX_TOPIC_SIZE];
+            snprintf(topic, MAX_TOPIC_SIZE, "%s/%s/%d", CUSTOM_HOST_NAME, "/push_button/", _inputPins[i]);
+            _mqttInstance->publish(topic, "true");
         }
     }
 
@@ -176,7 +189,7 @@ void DigitalOutput::setState(bool state)
     // If MQTT is enabled, update the status in MQTT.
     if (_mqttInstance != nullptr)
     {
-        _mqttInstance->client.publish(_topicName, _state ? "true" : "false");
+        _mqttInstance->publish(_topicName, _state ? "true" : "false");
     }
 }
 

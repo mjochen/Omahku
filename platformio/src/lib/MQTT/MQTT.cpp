@@ -20,10 +20,10 @@ MQTT::~MQTT() = default;
 bool MQTT::setup()
 {
     // Create a new PubSubClient with the Ethernet card.
-    this->client = PubSubClient(this->ethClient);
+    this->_client = PubSubClient(this->_ethClient);
 
     // Set the MQTT server address and port.
-    this->client.setServer(MQTT_SERVER_ADDRESS, MQTT_SERVER_PORT);
+    this->_client.setServer(MQTT_SERVER_ADDRESS, MQTT_SERVER_PORT);
 
     return true;
 }
@@ -31,17 +31,27 @@ bool MQTT::setup()
 void MQTT::loop()
 {
     // If the client is not connected, retry the connection.
-    if (!client.connected())
+    if (!_client.connected())
     {
-        debugln("Trying MQTT connection...");
+        debugln(F("Trying MQTT connection..."));
 
-        if (client.connect(MQTT_CLIENT_ID))
+        if (_client.connect(MQTT_CLIENT_ID))
         {
-            debugln("MQTT client connected.");
+            debugln(F("MQTT client connected."));
         }
     }
 
     // Process MQTT messages and maintain the connection
     // to the server. Also send periodic keep alives.
-    client.loop();
+    _client.loop();
+}
+
+bool MQTT::publish(const char *topic, const char *payload)
+{
+    return _client.publish(topic, payload);
+}
+
+PubSubClient MQTT::getPubSubClient()
+{
+    return _client;
 }

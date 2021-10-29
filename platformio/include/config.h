@@ -23,7 +23,7 @@
 #define MQTT_CLIENT_ID CUSTOM_HOST_NAME
 
 // MQTT server IP address
-#define MQTT_SERVER_ADDRESS IPAddress(192, 168, 10, 240)
+#define MQTT_SERVER_ADDRESS IPAddress(192, 168, 30, 200)
 
 // MQTT server port
 // Default: 1883
@@ -84,10 +84,10 @@
 // You can change these if the program does not fit on the MCU.
 
 // Maximum amount of physical outputs that the program supports.
-#define MAX_AMOUNT_OF_INSTANCES 100
+#define MAX_AMOUNT_OF_INSTANCES 30
 
 // Maximum amount of input pins that a single output supports.
 #define MAX_AMOUNT_OF_INPUT_PINS 8
 
 // Maximum amount of all off input pins that a single output supports.
-#define MAX_AMOUNT_OF_ALL_OFF_INPUT_PINS 8
+#define MAX_AMOUNT_OF_ALL_OFF_INPUT_PINS 4

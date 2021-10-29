@@ -22,16 +22,18 @@ namespace Omahku
     class MQTT
     {
     protected:
-        EthernetClient ethClient;
-        
+        EthernetClient _ethClient;
+        PubSubClient _client;
     public:
-        PubSubClient client;
-
         MQTT();
         ~MQTT();
 
         bool setup();
         void loop();
+
+        bool publish(const char *topic, const char *payload);
+        
+        PubSubClient getPubSubClient();
     };
 }
 

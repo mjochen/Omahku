@@ -16,6 +16,9 @@
 #include "lib/MQTT/MQTT.h"
 #include "constants.h"
 
+#define MAX_OUTPUT_NAME_SIZE 30
+#define MAX_TOPIC_SIZE 80
+
 namespace Omahku
 {
     class DigitalOutput
@@ -27,12 +30,15 @@ namespace Omahku
         static MQTT* _mqttInstance;
 
         // Output name and topic for MQTT.
-        char _outputName[30];
-        char _topicName[100];
+        char _outputName[MAX_OUTPUT_NAME_SIZE];
+        char _topicName[MAX_TOPIC_SIZE];
 
         // Output pin and state.
         uint8_t _outputPin;
         bool _state;
+
+        unsigned long _lastButtonPress;
+        int16_t _buttonPressed;
 
         // Supporting a maximum of MAX_AMOUNT_OF_INPUT_PINS push button inputs per output pin.
         uint8_t _inputPinCount;
