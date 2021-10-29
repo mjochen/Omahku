@@ -20,22 +20,22 @@ bool Eth::setup()
     // Start the Ethernet connection with the MAC address and specify a timeout of 5 seconds.
     if (Ethernet.begin(macAddress, 5000UL) == 0)
     {
-        Serial.println("Failed to configure Ethernet using DHCP.");
+        debugln("Failed to configure Ethernet using DHCP.");
 
         if (Ethernet.hardwareStatus() == EthernetNoHardware)
         {
-            Serial.println("Ethernet controller not found.");
+            debugln("Ethernet controller not found.");
         } 
         else if (Ethernet.linkStatus() == LinkOFF)
         {
-            Serial.println("Ethernet cable is not connected/no link.");
+            debugln("Ethernet cable is not connected/no link.");
         }
 
         return false;
     }
 
-    Serial.print("I have an IP address! It's: ");
-    Serial.println(Ethernet.localIP());
+    debug("I have an IP address! It's: ");
+    debugln(Ethernet.localIP());
 
     return true;
 }
@@ -46,22 +46,22 @@ void Eth::loop()
     {
         case 1:
             // DHCP lease renewal failed.
-            Serial.println("I have no IP address anymore...");
+            debugln("I have no IP address anymore...");
             break;
         
         case 2:
             // DHCP lease renewal success.
-            Serial.println("I got to keep my IP address!");
+            debugln("I got to keep my IP address!");
             break;
 
         case 3:
             // Rebind fail.
-            Serial.println("Rebind failed.");
+            debugln("Rebind failed.");
             break;
 
         case 4:
             // Rebind success.
-            Serial.println("Rebind success.");
+            debugln("Rebind success.");
             break;
 
         default:

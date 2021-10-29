@@ -17,6 +17,18 @@
 #define MAC_ADDR_BYTE_5 0x30
 #define MAC_ADDR_BYTE_6 0x31
 
+// # MQTT settings
+// Client name
+// Default: same name as the host name
+#define MQTT_CLIENT_ID CUSTOM_HOST_NAME
+
+// MQTT server IP address
+#define MQTT_SERVER_ADDRESS IPAddress(192, 168, 10, 240)
+
+// MQTT server port
+// Default: 1883
+#define MQTT_SERVER_PORT 1883
+
 ///////////////////////////////////////////
 //                                       //
 //  Inputs                               //

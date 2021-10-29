@@ -1,14 +1,10 @@
 #ifndef OMAHKU_ETH
 #define OMAHKU_ETH
 
+#include "debug.h"
 #include "config.h"
 #include <SPI.h>
 #include <EthernetENC.h>
-
-#ifdef HOST_NAME
-#undef HOST_NAME
-#define HOST_NAME ard
-#endif
 
 namespace Omahku
 {

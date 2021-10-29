@@ -1,3 +1,0 @@
-#define SECONDS 1000
-#define MINUTES 60 * SECONDS
-#define HOURS 60 * MINUTES

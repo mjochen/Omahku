@@ -1,12 +1,31 @@
+/**
+ * @file DigitalOutput.cpp
+ * @author Jonas Claes (jonas@jonasclaes.be)
+ * @brief This is the implementation for a digital output.
+ * @version 0.1
+ * @date 2021-10-29
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "DigitalOutput.h"
 
 using namespace Omahku;
 
 uint8_t DigitalOutput::_instanceCount = 0;
 DigitalOutput *DigitalOutput::_instances[MAX_AMOUNT_OF_INSTANCES] = {};
+MQTT *DigitalOutput::_mqttInstance = nullptr;
 
-DigitalOutput::DigitalOutput(uint8_t outputPin)
+DigitalOutput::DigitalOutput(uint8_t outputPin, const char *outputName)
 {
+    // If there is no output name set, give it
+    // the value of the output pin number.
+    if (outputName == nullptr) itoa(outputPin, _outputName, 10);
+    else strncpy(_outputName, outputName, 40);
+
+    sprintf(_topicName, "%s/%s/%s", CUSTOM_HOST_NAME, "/output/", _outputName);
+
     // Initialize the pin as an output.
     pinMode(outputPin, OUTPUT);
 
@@ -97,6 +116,12 @@ void DigitalOutput::loop()
     }
 }
 
+// Set the MQTT instance globally for the DigitalOutput class.
+void DigitalOutput::setMQTTInstance(MQTT* mqttInstance)
+{
+    _mqttInstance = mqttInstance;
+}
+
 void DigitalOutput::handle()
 {
     // Loop over every input pin, and check it's state.
@@ -128,6 +153,9 @@ void DigitalOutput::handle()
         }
     }
 
+    // If the time delay function is enabled AND the
+    // output is turned on, check if the time differential
+    // has been exceeded yet. If it has, turn off the output.
     if (_timeDelayFunction && _state)
     {
         unsigned long timeDifferential = millis() - _timeStampOn;
@@ -138,17 +166,18 @@ void DigitalOutput::handle()
     }
 }
 
-void DigitalOutput::setState()
-{
-    setState(_state);
-}
-
 void DigitalOutput::setState(bool state)
 {
     // Set the output state.
     // True is on, false is off.
     _state = state;
     digitalWrite(_outputPin, !_state);
+
+    // If MQTT is enabled, update the status in MQTT.
+    if (_mqttInstance != nullptr)
+    {
+        _mqttInstance->client.publish(_topicName, _state ? "true" : "false");
+    }
 }
 
 bool DigitalOutput::getState()
